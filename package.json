@@ -1,0 +1,56 @@
+{
+  "name": "todoist-like-desktop-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "中文桌面端任务管理应用 V1",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
+    "build": "tsc && vite build",
+    "dist": "npm run build && electron-builder",
+    "pack": "npm run build && electron-builder --dir",
+    "preview": "vite --host 127.0.0.1",
+    "typecheck": "tsc --noEmit"
+  },
+  "build": {
+    "appId": "com.local.todoistlike.desktop",
+    "productName": "日程清单",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": ">=5 <7",
+    "lucide-react": ">=0.550 <1",
+    "react": ">=19 <20",
+    "react-dom": ">=19 <20"
+  },
+  "devDependencies": {
+    "@types/node": ">=22 <26",
+    "@types/react": ">=19 <20",
+    "@types/react-dom": ">=19 <20",
+    "concurrently": ">=9 <10",
+    "electron": ">=38 <42",
+    "electron-builder": "^26.8.1",
+    "typescript": ">=5.8 <6",
+    "vite": ">=7 <9",
+    "wait-on": ">=8 <10"
+  }
+}
