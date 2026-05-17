@@ -1,0 +1,55 @@
+name: Release Windows Installer
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Build Windows installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build installer
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+          ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+        run: npm run dist
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 日程清单 ${{ github.ref_name }}
+          body: |
+            ## 日程清单 ${{ github.ref_name }}
+
+            这是日程清单桌面端的 Windows 安装包。
+
+            ### 使用方式
+
+            1. 下载 `日程清单 Setup *.exe`
+            2. 双击安装
+            3. 从桌面快捷方式或开始菜单打开
+
+            ### 说明
+
+            - 当前版本为本地桌面版，任务、附件、头像和设置都保存在用户电脑本地。
+            - 首次安装时，Windows 可能会提示未知发布者，这是因为项目暂未配置正式代码签名证书。
+          files: |
+            release/*.exe
